@@ -7513,9 +7513,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.648":
-  version: 1.4.659
-  resolution: "electron-to-chromium@npm:1.4.659"
-  checksum: de66233ea6e3b00d8da3a8ba5242e6fa54e596345f27ac0554c5c8b1cf5f3d20711089b4bb7270a9607e1597153619407c2bdaa13ad944730ce99f17f68d4c5f
+  version: 1.4.661
+  resolution: "electron-to-chromium@npm:1.4.661"
+  checksum: 7d89d8e60496ee2b713b79e266ec71972a0c0c2adc8e4c3a3753e24faf5ece173c89a7063d5a438e8a83532c2461f1c1e35b0b7897f471ea8c2f99590aa14672
   languageName: node
   linkType: hard
 
@@ -9159,12 +9159,13 @@ __metadata:
   linkType: hard
 
 "get-symbol-description@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "get-symbol-description@npm:1.0.1"
+  version: 1.0.2
+  resolution: "get-symbol-description@npm:1.0.2"
   dependencies:
     call-bind: ^1.0.5
     es-errors: ^1.3.0
-  checksum: 3feb5130efcade947cbad0304eb2163bab7b80e2c5ce24adcdc242cbdbbbaebbbe0f536807822f333b5d1088288ee19534cb75cd92f18aa76e050ea16e766915
+    get-intrinsic: ^1.2.4
+  checksum: e1cb53bc211f9dbe9691a4f97a46837a553c4e7caadd0488dc24ac694db8a390b93edd412b48dcdd0b4bbb4c595de1709effc75fc87c0839deedc6968f5bd973
   languageName: node
   linkType: hard
 
@@ -14445,13 +14446,13 @@ __metadata:
   linkType: hard
 
 "postcss@npm:^8.3.5, postcss@npm:^8.4.33, postcss@npm:~8.4.32":
-  version: 8.4.34
-  resolution: "postcss@npm:8.4.34"
+  version: 8.4.35
+  resolution: "postcss@npm:8.4.35"
   dependencies:
     nanoid: ^3.3.7
     picocolors: ^1.0.0
     source-map-js: ^1.0.2
-  checksum: 46c32b51810a23060288c86fdb5195237c497f952c674167fd1cbb3f0c628389a3fd48ae0b289447e5368b4abbc95f81e2d318bfdc5554063b2a7e8192e1a540
+  checksum: cf3c3124d3912a507603f6d9a49b3783f741075e9aa73eb592a6dd9194f9edab9d20a8875d16d137d4f779fe7b6fbd1f5727e39bfd1c3003724980ee4995e1da
   languageName: node
   linkType: hard
 
@@ -14904,7 +14905,6 @@ __metadata:
     react-dom: 18.2.0
     react-native: 0.73.4
     react-native-web: ~0.19.6
-    react-native-webrtc: ^118.0.1
     react-native-webview: 13.6.4
   languageName: unknown
   linkType: soft
@@ -14936,6 +14936,8 @@ __metadata:
     release-it: ^15.0.0
     typescript: ^5.0.2
   peerDependencies:
+    "@livekit/react-native": "*"
+    "@livekit/react-native-webrtc": "*"
     react: "*"
     react-native: "*"
     react-native-webview: "*"
@@ -14969,19 +14971,6 @@ __metadata:
     react: ^18.0.0
     react-dom: ^18.0.0
   checksum: d0a75d777fdd97ff513e2c2bb90512fbfeca2176916f1257085ee505b37c9c6dda64aefa863c970702aeca99d4d898cce843d74ecdaeb080875131cb1373d0dc
-  languageName: node
-  linkType: hard
-
-"react-native-webrtc@npm:^118.0.1":
-  version: 118.0.1
-  resolution: "react-native-webrtc@npm:118.0.1"
-  dependencies:
-    base64-js: 1.5.1
-    debug: 4.3.4
-    event-target-shim: 6.0.2
-  peerDependencies:
-    react-native: ">=0.60.0"
-  checksum: cec9651d5e145cde6d052fa4c85a2698d19d31c076d5ff5c8e82c0bc99cf7decf7276b08a05704ae0392862c8feb0ec557693e7a63a35d1e491d6975a974f1a3
   languageName: node
   linkType: hard
 

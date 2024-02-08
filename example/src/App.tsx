@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { StyleSheet, View } from 'react-native';
-import Functional from 'react-native-functional';
+import { Functional } from 'react-native-functional';
 
 export default function App() {
   return (

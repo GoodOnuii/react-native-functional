@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { registerGlobals } from '@livekit/react-native';
-import { RoomPage } from './livekit';
+import { useAudioRoom } from './room';
 import React, { useRef } from 'react';
 
 registerGlobals();
@@ -12,15 +12,41 @@ interface FunctionalProps {
   onEvent?: (event: any) => void;
 }
 
-export default function Functional(props: FunctionalProps) {
+export function Functional(props: FunctionalProps) {
   const { roomId, accessToken, onEvent } = props;
   const webViewRef = useRef(null);
+
+  const { connect, disconnect, microphonePublication } = useAudioRoom();
 
   const onMessage = (event: { nativeEvent: { data: string } }) => {
     //receive message from the web page. working here until here
     const data = JSON.parse(event.nativeEvent.data);
 
     if (onEvent) onEvent(data);
+
+    switch (data.type) {
+      case 'app.event.join':
+        connect({
+          url: data.data.url,
+          token: data.data.token,
+        });
+        break;
+
+      case 'app.event.left':
+        disconnect();
+        break;
+
+      case 'app.event.mute':
+        microphonePublication?.handleMuted();
+        break;
+
+      case 'app.event.unmute':
+        microphonePublication?.handleUnmuted();
+        break;
+
+      default:
+        break;
+    }
   };
 
   return (
@@ -35,7 +61,6 @@ export default function Functional(props: FunctionalProps) {
         allowsInlineMediaPlayback={true}
         onMessage={onMessage}
       />
-      <RoomPage url="url" token="token" />
     </View>
   );
 }

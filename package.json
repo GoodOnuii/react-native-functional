@@ -80,6 +80,8 @@
     "@types/react": "17.0.21"
   },
   "peerDependencies": {
+    "@livekit/react-native": "*",
+    "@livekit/react-native-webrtc": "*",
     "react": "*",
     "react-native": "*",
     "react-native-webview": "*"
