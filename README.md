@@ -8,44 +8,80 @@ react-native-functional
 npm install react-native-functional
 ```
 
-## Usage
+This library depends on `@livekit/react-native-webrtc`, which has additional installation instructions found here:
 
-```js
-import { Functional } from 'react-native-functional';
+- [iOS Installation Guide](https://github.com/livekit/react-native-webrtc/blob/master/Documentation/iOSInstallation.md)
+- [Android Installation Guide](https://github.com/livekit/react-native-webrtc/blob/master/Documentation/AndroidInstallation.md)
 
-// ...
+---
 
-return (
-  <Functional
-    roomId={'id'}
-    accessToken={'token'}
-    onEvent={(event) => {
-      // ...
-    }}
-  />
-);
+Once the `@livekit/react-native-webrtc` dependency is installed, one last step is needed to finish the installation:
+
+### Android
+
+In your [MainApplication.java](https://github.com/livekit/client-sdk-react-native/blob/main/example/android/app/src/main/java/com/example/livekitreactnative/MainApplication.java) file:
+
+#### Java
+
+```java
+import com.livekit.reactnative.LiveKitReactNative;
+import com.livekit.reactnative.audio.AudioType;
+
+public class MainApplication extends Application implements ReactApplication {
+
+  @Override
+  public void onCreate() {
+    // Place this above any other RN related initialization
+    // When AudioType is omitted, it'll default to CommunicationAudioType.
+    // Use MediaAudioType if user is only consuming audio, and not publishing.
+    LiveKitReactNative.setup(this, new AudioType.CommunicationAudioType());
+
+    //...
+  }
+}
 ```
 
-Config plugin to auto-configure `react-native-webrtc` when the native code is generated (`npx expo prebuild`). [Upstream PR](https://github.com/react-native-webrtc/react-native-webrtc/pull/1013).
+Or in your **MainApplication.kt** if you are using RN 0.73+
 
-### Versioning
+#### Kotlin
 
-Ensure you use versions that work together!
+```kotlin
+import com.livekit.reactnative.LiveKitReactNative
+import com.livekit.reactnative.audio.AudioType
 
-| `expo` | `react-native-webrtc` | `@config-plugins/react-native-webrtc` |
-| ------ | --------------------- | ------------------------------------- |
-| 50.0.0 | 118.0.1               | 8.0.0                                 |
-| 49.0.0 | 111.0.3               | 7.0.0                                 |
-| 48.0.0 | 106.0.6               | 6.0.0                                 |
-| 47.0.0 | 1.106.1               | 5.0.0                                 |
-| 46.0.0 | 1.100.0               | 4.0.0                                 |
-| 45.0.0 | 1.100.0               | 3.0.0                                 |
-| 44.0.0 | 1.92.2                | 2.0.0                                 |
-| 43.0.0 | 1.92.2                | 1.0.0                                 |
+class MainApplication : Application, ReactApplication() {
+  override fun onCreate() {
+    // Place this above any other RN related initialization
+    // When AudioType is omitted, it'll default to CommunicationAudioType.
+    // Use MediaAudioType if user is only consuming audio, and not publishing.
+    LiveKitReactNative.setup(this, AudioType.CommunicationAudioType())
 
-> Expo SDK 42 uses `react-native@0.63` which doesn't work with `react-native-webrtc`, specifically iOS production builds fail. Meaning this package is only supported for Expo SDK +43.
+    //...
+  }
+}
+```
 
-### Expo installation
+---
+
+### iOS
+
+In your [AppDelegate.m](https://github.com/livekit/client-sdk-react-native/blob/main/example/ios/LivekitReactNativeExample/AppDelegate.mm) file:
+
+```objc
+#import "LivekitReactNative.h"
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+  // Place this above any other RN related initialization
+  [LivekitReactNative setup];
+
+  //...
+}
+```
+
+### Expo
 
 > This package cannot be used in the "Expo Go" app because [it requires custom native code](https://docs.expo.io/workflow/customizing/).
 > First install the package with yarn, npm, or [`npx expo install`](https://docs.expo.io/workflow/expo-cli/#expo-install).
@@ -142,6 +178,26 @@ For bare workflow projects, you can follow the manual setup guides:
 
 - [iOS](https://github.com/react-native-webrtc/react-native-webrtc/blob/master/Documentation/iOSInstallation.md)
 - [Android](https://github.com/react-native-webrtc/react-native-webrtc/blob/master/Documentation/AndroidInstallation.md)
+
+## Usage
+
+```js
+import { Functional } from 'react-native-functional';
+
+// ...
+
+return (
+  <Functional
+    roomId={'id'}
+    accessToken={'token'}
+    onEvent={(event) => {
+      // ...
+    }}
+  />
+);
+```
+
+Config plugin to auto-configure `react-native-webrtc` when the native code is generated (`npx expo prebuild`). [Upstream PR](https://github.com/react-native-webrtc/react-native-webrtc/pull/1013).
 
 ## Contributing
 
