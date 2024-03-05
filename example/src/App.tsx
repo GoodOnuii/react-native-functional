@@ -9,6 +9,7 @@ export default function App() {
       <Functional
         roomId={'id'}
         accessToken={'token'}
+        readonly={false}
         onEvent={(event) => {
           console.log('event: ', event);
         }}

@@ -2,19 +2,21 @@ import { StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { registerGlobals } from '@livekit/react-native';
 import { useAudioRoom } from './room';
-import React, { useRef } from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 registerGlobals();
 
 interface FunctionalProps {
   roomId: string;
   accessToken: string;
+  readonly?: boolean;
   onEvent?: (event: any) => void;
 }
 
 export function Functional(props: FunctionalProps) {
-  const { roomId, accessToken, onEvent } = props;
-  const webViewRef = useRef(null);
+  const { roomId, accessToken, readonly, onEvent } = props;
+  const webViewRef = useRef<WebView>(null);
+  const [defaultReadonly, setDefaultReadonly] = useState(false);
 
   const { connect, disconnect, microphonePublication } = useAudioRoom();
 
@@ -49,6 +51,20 @@ export function Functional(props: FunctionalProps) {
     }
   };
 
+  const handleDefaultValues = useCallback(() => {
+    if (!defaultReadonly) setDefaultReadonly(!!readonly);
+  }, [defaultReadonly, readonly]);
+
+  useLayoutEffect(() => {
+    handleDefaultValues();
+
+    if (!webViewRef.current) return;
+
+    webViewRef.current.postMessage(
+      JSON.stringify({ type: 'app.readonly.changed', data: { readonly } })
+    );
+  }, [readonly, handleDefaultValues]);
+
   return (
     <View style={styles.container}>
       <WebView
@@ -56,7 +72,7 @@ export function Functional(props: FunctionalProps) {
         style={styles.container}
         originWhitelist={['*']}
         source={{
-          uri: `https://draw.seoltab.com/whiteboard?room_id=${roomId}&access_token=${accessToken}`,
+          uri: `http://localhost:3000/whiteboard?room_id=${roomId}&access_token=${accessToken}&readonly=${defaultReadonly}`,
         }}
         allowsInlineMediaPlayback={true}
         onMessage={onMessage}
