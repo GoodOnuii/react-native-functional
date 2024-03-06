@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { registerGlobals } from '@livekit/react-native';
+import { registerGlobals, useParticipant } from '@livekit/react-native';
 import { useAudioRoom } from './room';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
@@ -16,9 +16,12 @@ interface FunctionalProps {
 export function Functional(props: FunctionalProps) {
   const { roomId, accessToken, readonly, onEvent } = props;
   const webViewRef = useRef<WebView>(null);
+  const [defaultMic, setDefaultMic] = useState(false);
   const [defaultReadonly, setDefaultReadonly] = useState(false);
 
-  const { connect, disconnect, microphonePublication } = useAudioRoom();
+  const { room, connect, disconnect } = useAudioRoom();
+
+  const { microphonePublication } = useParticipant(room.localParticipant);
 
   const onMessage = (event: { nativeEvent: { data: string } }) => {
     //receive message from the web page. working here until here
@@ -39,17 +42,22 @@ export function Functional(props: FunctionalProps) {
         break;
 
       case 'app.event.mute':
-        microphonePublication?.handleMuted();
+        setDefaultMic(false);
         break;
 
       case 'app.event.unmute':
-        microphonePublication?.handleUnmuted();
+        setDefaultMic(true);
         break;
 
       default:
         break;
     }
   };
+
+  useLayoutEffect(() => {
+    if (defaultMic) microphonePublication?.handleUnmuted();
+    else microphonePublication?.handleMuted();
+  }, [defaultMic, microphonePublication]);
 
   const handleDefaultValues = useCallback(() => {
     if (!defaultReadonly) setDefaultReadonly(!!readonly);
@@ -72,7 +80,7 @@ export function Functional(props: FunctionalProps) {
         style={styles.container}
         originWhitelist={['*']}
         source={{
-          uri: `http://localhost:3000/whiteboard?room_id=${roomId}&access_token=${accessToken}&readonly=${defaultReadonly}`,
+          uri: `https://draw.seoltab.com/whiteboard?room_id=${roomId}&access_token=${accessToken}&readonly=${defaultReadonly}`,
         }}
         allowsInlineMediaPlayback={true}
         onMessage={onMessage}

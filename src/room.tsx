@@ -49,5 +49,10 @@ export const useAudioRoom = () => {
     };
   }, [connect, disconnect]);
 
-  return { connect, disconnect, microphonePublication };
+  return {
+    room,
+    connect,
+    disconnect,
+    microphonePublication,
+  };
 };
