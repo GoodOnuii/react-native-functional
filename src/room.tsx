@@ -8,7 +8,13 @@ import { useCallback, useEffect, useState } from 'react';
 
 export const useAudioRoom = () => {
   // Setup Room state
-  const [room] = useState(() => new Room());
+  const [room] = useState(() => {
+    return new Room({
+      reconnectPolicy: {
+        nextRetryDelayInMs: () => 3000,
+      },
+    });
+  });
   useIOSAudioManagement(room);
 
   const { microphonePublication } = useParticipant(room.localParticipant);
