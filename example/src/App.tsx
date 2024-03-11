@@ -7,12 +7,12 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Functional
-        roomId={'id'}
-        accessToken={'token'}
-        readonly={false}
-        onEvent={(event) => {
-          console.log('event: ', event);
-        }}
+      // roomId={'id'}
+      // accessToken={'token'}
+      // readonly={false}
+      // onEvent={(event) => {
+      //   console.log('event: ', event);
+      // }}
       />
     </View>
   );
