@@ -7,6 +7,7 @@ import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 registerGlobals();
 
 interface FunctionalProps {
+  type?: 'default' | 'homework' | 'progress';
   roomId: string;
   accessToken: string;
   value?: {
@@ -20,11 +21,18 @@ interface FunctionalProps {
 }
 
 export function Functional(props: FunctionalProps) {
-  const { roomId, accessToken, readonly, value, onEvent } = props;
+  const {
+    type = 'default',
+    roomId,
+    accessToken,
+    readonly,
+    value = {},
+    onEvent,
+  } = props;
   const webViewRef = useRef<WebView>(null);
   const [defaultMic, setDefaultMic] = useState(false);
   const [defaultValue, setDefaultValue] = useState({
-    init: true,
+    init: false,
     readonly: false,
     lessonStarted: false,
     homeworkSubmitted: false,
@@ -76,10 +84,10 @@ export function Functional(props: FunctionalProps) {
     if (!defaultValue.init) {
       setDefaultValue({
         init: true,
-        lessonStarted: !!value?.lessonStarted,
-        homeworkSubmitted: !!value?.homeworkSubmitted,
-        isAnswerOpen: !!value?.isAnswerOpen,
-        appToken: value?.appToken ?? '',
+        lessonStarted: !!value.lessonStarted,
+        homeworkSubmitted: !!value.homeworkSubmitted,
+        isAnswerOpen: !!value.isAnswerOpen,
+        appToken: value.appToken ?? '',
         readonly: !!readonly,
       });
     }
@@ -95,16 +103,17 @@ export function Functional(props: FunctionalProps) {
         type: 'app.value.changed',
         data: {
           readonly: readonly,
-          lessonStarted: value?.lessonStarted,
-          homeworkSubmitted: value?.homeworkSubmitted,
-          isAnswerOpen: value?.isAnswerOpen,
-          appToken: value?.appToken,
+          lessonStarted: value.lessonStarted,
+          homeworkSubmitted: value.homeworkSubmitted,
+          isAnswerOpen: value.isAnswerOpen,
+          appToken: value.appToken,
         },
       })
     );
   }, [handleDefaultValues, value, readonly]);
 
   const params = new URLSearchParams({
+    type: type,
     room_id: roomId,
     access_token: accessToken,
     readonly: `${defaultValue.readonly}`,
