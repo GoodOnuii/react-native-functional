@@ -9,22 +9,35 @@ registerGlobals();
 interface FunctionalProps {
   roomId: string;
   accessToken: string;
+  value?: {
+    lessonStarted?: boolean;
+    homeworkSubmitted?: boolean;
+    isAnswerOpen?: boolean;
+    appToken?: string;
+  };
   readonly?: boolean;
   onEvent?: (event: any) => void;
 }
 
 export function Functional(props: FunctionalProps) {
-  const { roomId, accessToken, readonly, onEvent } = props;
+  const { roomId, accessToken, readonly, value, onEvent } = props;
   const webViewRef = useRef<WebView>(null);
   const [defaultMic, setDefaultMic] = useState(false);
-  const [defaultReadonly, setDefaultReadonly] = useState(false);
+  const [defaultValue, setDefaultValue] = useState({
+    init: true,
+    readonly: false,
+    lessonStarted: false,
+    homeworkSubmitted: false,
+    isAnswerOpen: false,
+    appToken: '',
+  });
 
   const { room, connect, disconnect } = useAudioRoom();
 
   const { microphonePublication } = useParticipant(room.localParticipant);
 
   const onMessage = (event: { nativeEvent: { data: string } }) => {
-    //receive message from the web page. working here until here
+    // receive message from the web page. working here until here
     const data = JSON.parse(event.nativeEvent.data);
 
     if (onEvent) onEvent(data);
@@ -60,8 +73,17 @@ export function Functional(props: FunctionalProps) {
   }, [defaultMic, microphonePublication]);
 
   const handleDefaultValues = useCallback(() => {
-    if (!defaultReadonly) setDefaultReadonly(!!readonly);
-  }, [defaultReadonly, readonly]);
+    if (!defaultValue.init) {
+      setDefaultValue({
+        init: true,
+        lessonStarted: !!value?.lessonStarted,
+        homeworkSubmitted: !!value?.homeworkSubmitted,
+        isAnswerOpen: !!value?.isAnswerOpen,
+        appToken: value?.appToken ?? '',
+        readonly: !!readonly,
+      });
+    }
+  }, [defaultValue, value, readonly]);
 
   useLayoutEffect(() => {
     handleDefaultValues();
@@ -69,9 +91,28 @@ export function Functional(props: FunctionalProps) {
     if (!webViewRef.current) return;
 
     webViewRef.current.postMessage(
-      JSON.stringify({ type: 'app.readonly.changed', data: { readonly } })
+      JSON.stringify({
+        type: 'app.value.changed',
+        data: {
+          readonly: readonly,
+          lessonStarted: value?.lessonStarted,
+          homeworkSubmitted: value?.homeworkSubmitted,
+          isAnswerOpen: value?.isAnswerOpen,
+          appToken: value?.appToken,
+        },
+      })
     );
-  }, [readonly, handleDefaultValues]);
+  }, [handleDefaultValues, value, readonly]);
+
+  const params = new URLSearchParams({
+    room_id: roomId,
+    access_token: accessToken,
+    readonly: `${defaultValue.readonly}`,
+    lesson_started: `${defaultValue.lessonStarted}`,
+    homework_submitted: `${defaultValue.homeworkSubmitted}`,
+    is_answer_open: `${defaultValue.isAnswerOpen}`,
+    app_token: defaultValue.appToken,
+  });
 
   return (
     <View style={styles.container}>
@@ -80,7 +121,7 @@ export function Functional(props: FunctionalProps) {
         style={styles.container}
         originWhitelist={['*']}
         source={{
-          uri: `https://draw.seoltab.com/whiteboard?room_id=${roomId}&access_token=${accessToken}&readonly=${defaultReadonly}`,
+          uri: `https://draw.seoltab.com/whiteboard?${params}`,
         }}
         allowsInlineMediaPlayback={true}
         onMessage={onMessage}
