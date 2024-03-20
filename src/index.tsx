@@ -119,7 +119,7 @@ export function Functional(props: FunctionalProps) {
     readonly: `${defaultValue.readonly}`,
     lesson_started: `${defaultValue.lessonStarted}`,
     homework_submitted: `${defaultValue.homeworkSubmitted}`,
-    is_answer_open: `${defaultValue.isAnswerOpen}`,
+    answer_open: `${defaultValue.isAnswerOpen}`,
     app_token: defaultValue.appToken,
   });
 
