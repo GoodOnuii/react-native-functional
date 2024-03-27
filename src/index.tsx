@@ -3,6 +3,7 @@ import { WebView } from 'react-native-webview';
 import { registerGlobals, useParticipant } from '@livekit/react-native';
 import { useAudioRoom } from './room';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { AudioSession } from '@livekit/react-native';
 
 registerGlobals();
 
@@ -44,7 +45,7 @@ export function Functional(props: FunctionalProps) {
 
   const { microphonePublication } = useParticipant(room.localParticipant);
 
-  const onMessage = (event: { nativeEvent: { data: string } }) => {
+  const onMessage = async (event: { nativeEvent: { data: string } }) => {
     // receive message from the web page. working here until here
     const data = JSON.parse(event.nativeEvent.data);
 
@@ -68,6 +69,26 @@ export function Functional(props: FunctionalProps) {
 
       case 'app.event.unmute':
         setDefaultMic(true);
+        break;
+
+      case 'app.event.getAudioOutputs':
+        const audioOutputs = await AudioSession.getAudioOutputs();
+        webViewRef.current?.postMessage(
+          JSON.stringify({
+            type: 'app.value.audioOutputs',
+            data: {
+              audioOutputs,
+            },
+          })
+        );
+        break;
+
+      case 'app.event.selectAudioOutput':
+        AudioSession.selectAudioOutput(data.data.deviceId);
+        break;
+
+      case 'app.event.showAudioRoutePicker':
+        AudioSession.showAudioRoutePicker();
         break;
 
       default:

@@ -1,6 +1,6 @@
 {
   "build": {
-    "development-simulator": {
+    "simulator": {
       "developmentClient": true,
       "distribution": "internal",
       "ios": {
