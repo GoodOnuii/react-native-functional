@@ -2,7 +2,14 @@ import { StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { registerGlobals, useParticipant } from '@livekit/react-native';
 import { useAudioRoom } from './room';
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import { AudioSession } from '@livekit/react-native';
 
 registerGlobals();
@@ -21,7 +28,7 @@ interface FunctionalProps {
   onEvent?: (event: any) => void;
 }
 
-export function Functional(props: FunctionalProps) {
+export const Functional = forwardRef((props: FunctionalProps, ref) => {
   const {
     type = 'default',
     roomId,
@@ -40,6 +47,31 @@ export function Functional(props: FunctionalProps) {
     isAnswerOpen: false,
     appToken: '',
   });
+
+  const handleNextPage = () => {
+    webViewRef.current?.postMessage(
+      JSON.stringify({
+        type: 'app.event.nextPage',
+        timestamp: new Date(),
+        data: {},
+      })
+    );
+  };
+
+  const handlePrevPage = () => {
+    webViewRef.current?.postMessage(
+      JSON.stringify({
+        type: 'app.event.prevPage',
+        timestamp: new Date(),
+        data: {},
+      })
+    );
+  };
+
+  useImperativeHandle(ref, () => ({
+    handleNextPage,
+    handlePrevPage,
+  }));
 
   const { room, connect, disconnect } = useAudioRoom();
 
@@ -76,6 +108,7 @@ export function Functional(props: FunctionalProps) {
         webViewRef.current?.postMessage(
           JSON.stringify({
             type: 'app.value.audioOutputs',
+            timestamp: new Date(),
             data: {
               audioOutputs,
             },
@@ -158,7 +191,7 @@ export function Functional(props: FunctionalProps) {
       />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {
