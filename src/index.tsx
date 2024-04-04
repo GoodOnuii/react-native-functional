@@ -186,6 +186,9 @@ export const Functional = forwardRef((props: FunctionalProps, ref) => {
         source={{
           uri: `https://draw.seoltab.com/whiteboard?${params}`,
         }}
+        keyboardDisplayRequiresUserAction={false}
+        mediaCapturePermissionGrantType="grant"
+        mediaPlaybackRequiresUserAction={false}
         allowsInlineMediaPlayback={true}
         onMessage={onMessage}
       />
