@@ -1,9 +1,5 @@
 import { Room } from 'livekit-client';
-import {
-  AudioSession,
-  useIOSAudioManagement,
-  useParticipant,
-} from '@livekit/react-native';
+import { AudioSession, useParticipant } from '@livekit/react-native';
 import { useCallback, useEffect, useState } from 'react';
 
 export const useAudioRoom = () => {
@@ -15,7 +11,6 @@ export const useAudioRoom = () => {
       },
     });
   });
-  useIOSAudioManagement(room);
 
   const { microphonePublication } = useParticipant(room.localParticipant);
 
@@ -25,15 +20,7 @@ export const useAudioRoom = () => {
       await AudioSession.setAppleAudioConfiguration({
         audioMode: 'default',
         audioCategory: 'playAndRecord',
-        audioCategoryOptions: [
-          'allowAirPlay',
-          'allowBluetooth',
-          'allowBluetoothA2DP',
-          'defaultToSpeaker',
-          'duckOthers',
-          'interruptSpokenAudioAndMixWithOthers',
-          'mixWithOthers',
-        ],
+        audioCategoryOptions: ['mixWithOthers'],
       });
       await AudioSession.startAudioSession();
       await room.connect(url, token, {});
