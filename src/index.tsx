@@ -15,6 +15,7 @@ import { AudioSession } from '@livekit/react-native';
 registerGlobals();
 
 interface FunctionalProps {
+  url?: string;
   type?: 'default' | 'homework' | 'progress';
   roomId: string;
   accessToken: string;
@@ -30,6 +31,7 @@ interface FunctionalProps {
 
 export const Functional = forwardRef((props: FunctionalProps, ref) => {
   const {
+    url,
     type = 'default',
     roomId,
     accessToken,
@@ -38,6 +40,7 @@ export const Functional = forwardRef((props: FunctionalProps, ref) => {
     onEvent,
   } = props;
   const webViewRef = useRef<WebView>(null);
+  const [defaultURL] = useState(url ?? 'https://draw.seoltab.com/whiteboard');
   const [defaultMic, setDefaultMic] = useState(false);
   const [defaultValue, setDefaultValue] = useState({
     init: false,
@@ -184,7 +187,7 @@ export const Functional = forwardRef((props: FunctionalProps, ref) => {
         style={styles.container}
         originWhitelist={['*']}
         source={{
-          uri: `https://draw.seoltab.com/whiteboard?${params}`,
+          uri: `${defaultURL}?${params}`,
         }}
         keyboardDisplayRequiresUserAction={false}
         mediaCapturePermissionGrantType="grant"
